@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulir Lamaran Kerja - Portal Kerja Pekanbaru</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            margin-top: 10px;
+        }
+        input, select {
+            margin-bottom: 15px;
+            padding: 8px;
+        }
+        button {
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>Formulir Lamaran Kerja</h1>
+    <form id="lamaranForm">
+        <label for="nama_lengkap">Nama Lengkap:</label>
+        <input type="text" id="nama_lengkap" name="nama_lengkap" required>
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+
+        <label for="id_lowongan">Pilih Lowongan:</label>
+        <select id="id_lowongan" name="id_lowongan" required>
+            <option value="">-- Pilih Lowongan --</option>
+            <!-- Lowongan options will be dynamically populated -->
+        </select>
+
+        <label for="no_hp">No Hp atau Wa</label>
+        <input type="number" id="no_hp" name="no_hp" required>
+
+        <label for="syarat">Upload syarata</label>
+        <input type="file" id="syarat" name="syarat" required>
+
+        <button type="submit">Kirim Lamaran</button>
+    </form>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const lowonganSelect = document.getElementById('id_lowongan');
+            const lamaranForm = document.getElementById('lamaranForm');
+
+            // Open IndexedDB connection
+            const dbName = "PortalKerjaPekanbaru";
+            const request = indexedDB.open(dbName, 1);
+
+            request.onsuccess = (event) => {
+                const db = event.target.result;
+                const transaction = db.transaction(["lowongan"], "readonly");
+                const lowonganStore = transaction.objectStore("lowongan");
+                const getAllRequest = lowonganStore.getAll();
+
+                getAllRequest.onsuccess = (event) => {
+                    const lowongan = event.target.result;
+                    
+                    // Populate dropdown with job titles
+                    lowongan.forEach(job => {
+                        const option = document.createElement('option');
+                        option.value = job.id_lowongan;
+                        option.textContent = job.judul;
+                        lowonganSelect.appendChild(option);
+                    });
+                };
+            };
+
+            request.onerror = (event) => {
+                console.error("Error opening database:", event.target.error);
+            };
+
+            // Form submission handler
+            lamaranForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                // Prepare pelamar data
+                const pelamarData = {
+                    nama_lengkap: document.getElementById('nama_lengkap').value,
+                    email: document.getElementById('email').value,
+                    no_hp: document.getElementById('no_hp').value
+                };
+
+                // Open IndexedDB connection to save applicant and application
+                const saveRequest = indexedDB.open(dbName, 1);
+
+                saveRequest.onsuccess = (event) => {
+                    const db = event.target.result;
+                    const pelamarTransaction = db.transaction(["pelamar"], "readwrite");
+                    const pelamarStore = pelamarTransaction.objectStore("pelamar");
+                    
+                    // First, save the applicant
+                    const addPelamarRequest = pelamarStore.add(pelamarData);
+
+                    addPelamarRequest.onsuccess = (pelamarEvent) => {
+                        // Get the auto-generated id_pelamar
+                        const id_pelamar = pelamarEvent.target.result;
+
+                        // Prepare lamaran data with id_pelamar
+                        const lamaranData = {
+                            id_pelamar: id_pelamar,
+                            id_lowongan: document.getElementById('id_lowongan').value,
+                            syarat : document.getElementById('syarat').value,
+                            status: 'Menunggu' // Default status for new applications
+                        };
+
+                        // Save the job application
+                        const lamaranTransaction = db.transaction(["lamaran"], "readwrite");
+                        const lamaranStore = lamaranTransaction.objectStore("lamaran");
+                        
+                        const addLamaranRequest = lamaranStore.add(lamaranData);
+
+                        addLamaranRequest.onsuccess = () => {
+                            alert('Lamaran berhasil dikirim!');
+                            lamaranForm.reset();
+                        };
+
+                        addLamaranRequest.onerror = (lamaranEvent) => {
+                            console.error("Error saving application:", lamaranEvent.target.error);
+                            alert('Terjadi kesalahan saat mengirim lamaran.');
+                        };
+                    };
+
+                    addPelamarRequest.onerror = (pelamarEvent) => {
+                        console.error("Error saving applicant:", pelamarEvent.target.error);
+                        alert('Terjadi kesalahan saat menyimpan data pelamar.');
+                    };
+                };
+            });
+        });
+    </script>
+</body>
+</html>

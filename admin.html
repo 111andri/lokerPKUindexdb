@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="id">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Admin Panel - Portal Kerja Pekanbaru</title>
+        <link rel="stylesheet" href="admin.css">
+    </head>
+    <body>
+        <h1>Admin Panel - Portal Kerja PT LUTFINDO</h1>
+
+        <nav>
+            <a href="#lowongan" onclick="showSection('lowongan')"
+                >Kelola Lowongan</a
+            >
+            <a href="#perusahaan" onclick="showSection('perusahaan')"
+                >Kelola Perusahaan</a
+            >
+            <a href="#pelamar" onclick="showSection('pelamar')"
+                >Kelola Pelamar</a
+            >
+            <a href="#lamaran" onclick="showSection('lamaran')"
+                >Kelola Lamaran</a
+            >
+            <a href="#user" onclick="showSection('user')">Kelola User</a>
+        </nav>
+
+        <div id="lowongan" class="section">
+            <h2>Kelola Lowongan</h2>
+            <div class="form-container">
+                <h3>Tambah Lowongan</h3>
+                <select id="selectPerusahaan" required>
+                    <option value="">Pilih Perusahaan</option>
+                    <!-- Data perusahaan akan ditambahkan di sini -->
+                </select>
+                <input
+                    type="text"
+                    id="judulLowongan"
+                    placeholder="Judul Lowongan"
+                    required
+                />
+                <input type="text" id="lokasi" placeholder="Lokasi" required />
+                <button class="button" onclick="addLowongan()">
+                    Simpan Lowongan
+                </button>
+            </div>
+            <table id="lowonganTable">
+                <thead>
+                    <tr>
+                        <th>ID Lowongan</th>
+                        <th>Judul Lowongan</th>
+                        <th>Nama Perusahaan</th>
+                        <th>Lokasi</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Data lowongan akan ditampilkan di sini -->
+                </tbody>
+            </table>
+        </div>
+
+        <div id="perusahaan" class="section hidden">
+            <h2>Kelola Perusahaan</h2>
+            <div class="form-container">
+                <h3>Tambah Perusahaan</h3>
+                <input
+                    type="text"
+                    id="namaPerusahaan"
+                    placeholder="Nama Perusahaan"
+                    required
+                />
+                <input
+                    type="text"
+                    id="industri"
+                    placeholder="Industri"
+                    required
+                />
+                <input
+                    type="text"
+                    id="deskripsi"
+                    placeholder="Deskripsi"
+                    required
+                />
+                <input type="text" id="alamat" placeholder="Alamat" required />
+                <button class="button" onclick="updatePerusahaan()">
+                    Edit Perusahaan
+                </button>
+                <button class="button" onclick="addPerusahaan()">
+                    Simpan Perusahaan
+                </button>
+            </div>
+            <table id="perusahaanTable">
+                <thead>
+                    <tr>
+                        <th>ID Perusahaan</th>
+                        <th>Nama Perusahaan</th>
+                        <th>Industri</th>
+                        <th>Deskripis Perusahaan</th>
+                        <th>Alamat</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Data perusahaan akan ditampilkan di sini -->
+                </tbody>
+            </table>
+        </div>
+
+        <div id="pelamar" class="section hidden">
+            <h2>Kelola Pelamar</h2>
+            <div class="form-container">
+                <h3>Tambah Pelamar</h3>
+                <input
+                    type="text"
+                    id="namaLengkap"
+                    placeholder="Nama Lengkap"
+                    required
+                />
+                <input
+                    type="email"
+                    id="emailPelamar"
+                    placeholder="Email"
+                    required
+                />
+
+                <input type="number" id="no_hp" placeholder="No Handphone" required>
+                <button class="button" onclick="addPelamar()">
+                    Simpan Pelamar
+                </button>
+            </div>
+
+            <table id="pelamarTable">
+                <thead>
+                    <tr>
+                        <th>ID Pelamar</th>
+                        <th>Nama Lengkap</th>
+                        <th>Email</th>
+                        <th>No Hp / Wa</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Data pelamar akan ditampilkan di sini -->
+                </tbody>
+            </table>
+        </div>
+
+        <div id="lamaran" class="section hidden">
+            <h2>Kelola Lamaran</h2>
+            <table id="lamaranTable">
+                <thead>
+                    <tr>
+                        <th>ID Lamaran</th>
+                        <th>Nama Lowongan</th>
+                        <th>Nama Perusahaan</th>
+                        <th>Alamat Perusahaan</th>
+                        <th>Nama Pelamar</th>
+                        <th>No hp / Wa</th>
+                        <th>Prasyarat</th>
+                        <th>Status</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Data lamaran akan ditampilkan di sini -->
+                </tbody>
+            </table>
+        </div>
+
+        <div id="user" class="section hidden">
+            <h2>Kelola User</h2>
+            <div class="form-container">
+                <h3>Tambah User</h3>
+                <input
+                    type="text"
+                    id="namaUser "
+                    placeholder="Nama User"
+                    required
+                />
+                <input
+                    type="text"
+                    id="username"
+                    placeholder="Username"
+                    required
+                />
+                <input
+                    type="password"
+                    id="password"
+                    placeholder="Password"
+                    required
+                />
+                <select id="statusUser ">
+                    <option value="">---pilih----</option>
+                    <option value="pelamar">Pelamar</option>
+                    <option value="admin">Admin</option>
+                </select>
+
+                <button class="button" onclick="addUser ()">Simpan User</button>
+            </div>
+            <button class="button" onclick="addUser ()">Tambah User</button>
+            <table id="userTable">
+                <thead>
+                    <tr>
+                        <th>ID User</th>
+                        <th>Nama User</th>
+                        <th>Username</th>
+                        <th>Password</th>
+                        <th>Status</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Data user akan ditampilkan di sini -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Add this HTML code just before the closing -->
+<div id="editLowonganModal" class="modal hidden">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Edit Lowongan</h2>
+        <form id="editLowonganForm">
+            <input type="hidden" id="editLowonganId">
+            <div class="form-group">
+                <label for="editPerusahaan">Nama Perusahaan:</label>
+                <input type="text" id="editPerusahaan" disabled>
+            </div>
+            <div class="form-group">
+                <label for="editJudulLowongan">Judul Lowongan:</label>
+                <input type="text" id="editJudulLowongan" required>
+            </div>
+            <div class="form-group">
+                <label for="editLokasi">Lokasi:</label>
+                <input type="text" id="editLokasi" disabled>
+            </div>
+            <button type="submit" class="button">Simpan Perubahan</button>
+        </form>
+    </div>
+</div>
+
+<!-- Modal Edit Perusahaan -->
+<div id="editPerusahaanModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeEditPerusahaanModal()">&times;</span>
+        <h2>Edit Perusahaan</h2>
+        <form id="editPerusahaanForm">
+            <label for="editNamaPerusahaan">Nama Perusahaan:</label>
+            <input type="text" id="editNamaPerusahaan" required>
+            <label for="editIndustri">Industri:</label>
+            <input type="text" id="editIndustri" required>
+            <label for="editDeskripsi">Deskripsi:</label>
+            <textarea id="editDeskripsi" required></textarea>
+            <label for="editAlamat">Alamat:</label>
+            <input type="text" id="editAlamat" required>
+            <input type="hidden" id="editIdPerusahaan">
+            <button type="button" onclick="updatePerusahaan()">Simpan Perubahan</button>
+        </form>
+    </div>
+</div>
+
+<!-- Modal Edit Pelamar -->
+<div id="editPelamarModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeEditPelamarModal()">&times;</span>
+        <h2>Edit Pelamar</h2>
+        <form id="editPelamarForm">
+            <label for="editNamaLengkap">Nama Lengkap:</label>
+            <input type="text" id="editNamaLengkap" required>
+            <label for="editEmail">Email:</label>
+            <input type="email" id="editEmail" required>
+            <label for="editNoHp">No HP:</label>
+            <input type="text" id="editNoHp" required>
+            <input type="hidden" id="editIdPelamar">
+            <button type="button" onclick="updatePelamar()">Simpan Perubahan</button>
+        </form>
+    </div>
+</div>
+
+<!-- Modal Edit User -->
+<div id="editUser Modal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeEditUserModal()">&times;</span>
+        <h2>Edit User</h2>
+        <form id="editUserForm">
+            <label for="editNamaUser ">Nama User:</label>
+            <input type="text" id="editNamaUser " required>
+            <label for="editUsername">Username:</label>
+            <input type="text" id="editUsername" required>
+            <label for="editPassword">Password:</label>
+            <input type="password" id="editPassword" required>
+            <label for="editStatusUser ">Status:</label>
+            <input type="text" id="editStatusUser " required>
+            <input type="hidden" id="editIdUser ">
+            <button type="button" onclick="updateUser ()">Simpan Perubahan</button>
+        </form>
+    </div>
+</div>
+
+        <script src="db.js"></script>
+        <script src="admin.js"></script>
+    </body>
+</html>
